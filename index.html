@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Sprint — Focus Timer</title>
+<meta name="description" content="A Pomodoro-style focus timer with tasks and study stats. Works offline." />
+<meta name="theme-color" content="#0f766e" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="icon" href="icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Sprint" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-mark">⏱️</span>
+    <div>
+      <h1>Sprint</h1>
+      <p class="brand-tagline">Focused work, timed — with tasks and stats to match</p>
+    </div>
+  </div>
+  <button class="btn btn-ghost" id="statsBtn">📊 Stats</button>
+</header>
+
+<main id="app">
+
+  <section id="timerView" class="view">
+    <div class="subject-row">
+      <input type="text" id="subjectInput" placeholder="What are you working on?" list="subjectSuggestions" dir="auto" />
+      <datalist id="subjectSuggestions"></datalist>
+    </div>
+
+    <div class="timer-stage" id="timerStage">
+      <svg class="timer-ring" viewBox="0 0 220 220">
+        <circle class="timer-ring-track" cx="110" cy="110" r="100"></circle>
+        <circle class="timer-ring-progress" id="timerRingProgress" cx="110" cy="110" r="100"></circle>
+      </svg>
+      <div class="timer-center">
+        <span class="timer-mode" id="timerModeLabel">Focus</span>
+        <span class="timer-time" id="timerTimeLabel">25:00</span>
+        <span class="timer-session" id="timerSessionLabel">Session 1 of 4</span>
+      </div>
+    </div>
+
+    <div class="timer-controls">
+      <button class="btn btn-ghost btn-icon" id="resetBtn" aria-label="Reset">↺</button>
+      <button class="btn btn-primary btn-wide" id="startPauseBtn">Start focusing</button>
+      <button class="btn btn-ghost btn-icon" id="skipBtn" aria-label="Skip to next phase">⏭</button>
+    </div>
+
+    <button class="link-btn" id="settingsToggleBtn">⚙️ Timer settings</button>
+
+    <div class="settings-panel hidden" id="settingsPanel">
+      <label class="settings-field">
+        Focus length (minutes)
+        <input type="number" id="focusMinutesInput" min="1" max="180" />
+      </label>
+      <label class="settings-field">
+        Break length (minutes)
+        <input type="number" id="breakMinutesInput" min="1" max="60" />
+      </label>
+      <label class="settings-field">
+        Long break every… sessions
+        <input type="number" id="sessionsUntilLongBreakInput" min="2" max="12" />
+      </label>
+      <label class="settings-field">
+        Long break length (minutes)
+        <input type="number" id="longBreakMinutesInput" min="1" max="90" />
+      </label>
+      <button class="btn btn-primary" id="saveSettingsBtn">Save</button>
+    </div>
+
+    <section class="task-section">
+      <div class="task-section-head">
+        <h2>Tasks</h2>
+        <span class="task-count" id="taskCount"></span>
+      </div>
+      <div class="add-task-row">
+        <input type="text" id="newTaskText" placeholder="Add a task…" dir="auto" />
+        <button class="btn btn-secondary" id="addTaskBtn">+ Add</button>
+      </div>
+      <div class="empty-state hidden" id="emptyTasks">
+        <span class="empty-state-emoji">✅</span>
+        <p>No tasks yet — add what you want to get done this session.</p>
+      </div>
+      <ul class="task-list" id="taskList"></ul>
+    </section>
+  </section>
+
+  <section id="statsView" class="view hidden">
+    <button class="btn-back" id="backFromStatsBtn">&larr; Back</button>
+    <h2>Stats</h2>
+
+    <div class="stats-grid" id="statsSummaryGrid"></div>
+
+    <h3 class="stats-subhead">Last 7 days</h3>
+    <div class="week-chart" id="weekChart"></div>
+
+    <h3 class="stats-subhead">By subject</h3>
+    <div class="subject-stats" id="subjectStats"></div>
+    <p class="empty-inline hidden" id="emptySubjectStats">No focus sessions completed yet — finish one to see it here.</p>
+  </section>
+
+</main>
+
+<div class="toast hidden" id="installToast">
+  <span>Install Sprint on your home screen for offline access.</span>
+  <button class="btn btn-primary" id="installBtn">Install</button>
+  <button class="icon-btn" id="dismissInstallBtn" aria-label="Dismiss">&times;</button>
+</div>
+
+<footer class="app-footer">🔒 Everything stays on this device — no account, no cloud, works offline.</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
