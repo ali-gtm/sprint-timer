@@ -21,6 +21,7 @@
     statsView: document.getElementById("statsView"),
 
     subjectInput: document.getElementById("subjectInput"),
+    notifStatus: document.getElementById("notifStatus"),
     subjectSuggestions: document.getElementById("subjectSuggestions"),
 
     timerStage: document.getElementById("timerStage"),
@@ -255,11 +256,30 @@
 
   var notificationPermissionRequested = false;
 
+  function renderNotifStatus() {
+    if (!("Notification" in window)) {
+      els.notifStatus.classList.add("hidden");
+      return;
+    }
+    var permission = Notification.permission;
+    if (permission === "denied") {
+      els.notifStatus.textContent = "🔕 Notifications are blocked for this app — enable them in your phone/browser settings to get alerts when a session ends.";
+      els.notifStatus.className = "notif-status blocked";
+    } else if (permission === "granted") {
+      els.notifStatus.textContent = "🔔 Notifications are on";
+      els.notifStatus.className = "notif-status ok";
+    } else {
+      els.notifStatus.classList.add("hidden");
+      return;
+    }
+    els.notifStatus.classList.remove("hidden");
+  }
+
   function ensureNotificationPermission() {
     if (notificationPermissionRequested) return;
     notificationPermissionRequested = true;
     if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
+      Notification.requestPermission().then(renderNotifStatus);
     }
   }
 
@@ -269,8 +289,8 @@
       ? "Break's over — back to " + (els.subjectInput.value.trim() || "it") + "."
       : (timer.mode === "longBreak" ? "Nice streak — take a longer breather." : "Nice work — short break time.");
 
-    if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
-      try { new Notification(title, { body: body, icon: "icons/icon-192.png" }); } catch (e) { /* ignore */ }
+    if ("Notification" in window && Notification.permission === "granted") {
+      try { new Notification(title, { body: body, icon: "icons/icon-192.png" }); } catch (e) { console.error("Notification failed", e); }
     }
     if (navigator.vibrate) navigator.vibrate([120, 60, 120]);
     playBeep();
@@ -606,4 +626,5 @@
   renderTimerFace();
   renderTasks();
   renderSubjectSuggestions();
+  renderNotifStatus();
 })();

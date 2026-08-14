@@ -1,4 +1,4 @@
-var CACHE_VERSION = "sprint-v2";
+var CACHE_VERSION = "sprint-v3";
 var RUNTIME_CACHE = "sprint-runtime-v1";
 
 var APP_SHELL = [

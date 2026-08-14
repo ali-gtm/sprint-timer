@@ -209,6 +209,26 @@ main { padding: 5vh 6vw 6vh; max-width: 560px; margin: 0 auto; }
   line-height: 1.5;
 }
 
+.notif-status {
+  text-align: center;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  padding: 8px 14px;
+  border-radius: 10px;
+  max-width: 42ch;
+  margin: -10px auto 22px;
+}
+
+.notif-status.blocked {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.notif-status.ok {
+  background: var(--teal-50);
+  color: var(--teal-700);
+}
+
 /* ---------- subject input ---------- */
 
 .subject-row { margin-bottom: 26px; }
