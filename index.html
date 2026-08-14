@@ -33,6 +33,8 @@
 <main id="app">
 
   <section id="timerView" class="view">
+    <p class="how-it-works-line">Work for a set time, then rest for a bit — Sprint times both and tells you when to switch.</p>
+
     <div class="subject-row">
       <input type="text" id="subjectInput" placeholder="What are you working on?" list="subjectSuggestions" dir="auto" />
       <datalist id="subjectSuggestions"></datalist>
@@ -51,12 +53,16 @@
     </div>
 
     <div class="timer-controls">
-      <button class="btn btn-ghost btn-icon" id="resetBtn" aria-label="Reset">↺</button>
+      <button class="btn btn-ghost btn-labeled" id="resetBtn">↺ Reset</button>
       <button class="btn btn-primary btn-wide" id="startPauseBtn">Start focusing</button>
-      <button class="btn btn-ghost btn-icon" id="skipBtn" aria-label="Skip to next phase">⏭</button>
+      <button class="btn btn-ghost btn-labeled" id="skipBtn">Skip ⏭</button>
     </div>
 
-    <button class="link-btn" id="settingsToggleBtn">⚙️ Timer settings</button>
+    <div class="preset-row">
+      <button class="preset-btn active" id="presetClassicBtn" data-preset="classic">Classic<span>25 work / 5 rest</span></button>
+      <button class="preset-btn" id="presetDeepBtn" data-preset="deep">Deep work<span>50 work / 10 rest</span></button>
+      <button class="preset-btn" id="presetCustomBtn" data-preset="custom">Custom<span>set your own</span></button>
+    </div>
 
     <div class="settings-panel hidden" id="settingsPanel">
       <label class="settings-field">

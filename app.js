@@ -33,7 +33,9 @@
     startPauseBtn: document.getElementById("startPauseBtn"),
     skipBtn: document.getElementById("skipBtn"),
 
-    settingsToggleBtn: document.getElementById("settingsToggleBtn"),
+    presetClassicBtn: document.getElementById("presetClassicBtn"),
+    presetDeepBtn: document.getElementById("presetDeepBtn"),
+    presetCustomBtn: document.getElementById("presetCustomBtn"),
     settingsPanel: document.getElementById("settingsPanel"),
     focusMinutesInput: document.getElementById("focusMinutesInput"),
     breakMinutesInput: document.getElementById("breakMinutesInput"),
@@ -461,9 +463,42 @@
   els.resetBtn.addEventListener("click", resetTimer);
   els.skipBtn.addEventListener("click", skipPhase);
 
-  els.settingsToggleBtn.addEventListener("click", function () {
-    els.settingsPanel.classList.toggle("hidden");
-  });
+  var PRESETS = {
+    classic: { focusMinutes: 25, breakMinutes: 5, longBreakMinutes: 15, sessionsUntilLongBreak: 4 },
+    deep: { focusMinutes: 50, breakMinutes: 10, longBreakMinutes: 20, sessionsUntilLongBreak: 3 }
+  };
+
+  function setActivePreset(name) {
+    els.presetClassicBtn.classList.toggle("active", name === "classic");
+    els.presetDeepBtn.classList.toggle("active", name === "deep");
+    els.presetCustomBtn.classList.toggle("active", name === "custom");
+  }
+
+  function applyPreset(name) {
+    setActivePreset(name);
+
+    if (name === "custom") {
+      els.settingsPanel.classList.remove("hidden");
+      return;
+    }
+
+    els.settingsPanel.classList.add("hidden");
+    state.settings = Object.assign({}, PRESETS[name]);
+    saveState();
+    els.focusMinutesInput.value = state.settings.focusMinutes;
+    els.breakMinutesInput.value = state.settings.breakMinutes;
+    els.longBreakMinutesInput.value = state.settings.longBreakMinutes;
+    els.sessionsUntilLongBreakInput.value = state.settings.sessionsUntilLongBreak;
+
+    if (!timer.running) {
+      timer.remainingMs = durationForMode(timer.mode);
+      renderTimerFace();
+    }
+  }
+
+  els.presetClassicBtn.addEventListener("click", function () { applyPreset("classic"); });
+  els.presetDeepBtn.addEventListener("click", function () { applyPreset("deep"); });
+  els.presetCustomBtn.addEventListener("click", function () { applyPreset("custom"); });
 
   els.saveSettingsBtn.addEventListener("click", function () {
     var focusMinutes = Math.max(1, Number(els.focusMinutesInput.value) || 25);
@@ -555,6 +590,15 @@
   els.breakMinutesInput.value = state.settings.breakMinutes;
   els.longBreakMinutesInput.value = state.settings.longBreakMinutes;
   els.sessionsUntilLongBreakInput.value = state.settings.sessionsUntilLongBreak;
+
+  var matchedPreset = Object.keys(PRESETS).find(function (name) {
+    var p = PRESETS[name];
+    return p.focusMinutes === state.settings.focusMinutes &&
+      p.breakMinutes === state.settings.breakMinutes &&
+      p.longBreakMinutes === state.settings.longBreakMinutes &&
+      p.sessionsUntilLongBreak === state.settings.sessionsUntilLongBreak;
+  });
+  setActivePreset(matchedPreset || "custom");
 
   applyModeColors();
   timer.remainingMs = durationForMode(timer.mode);
