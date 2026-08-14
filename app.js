@@ -292,7 +292,7 @@
     if ("Notification" in window && Notification.permission === "granted") {
       try { new Notification(title, { body: body, icon: "icons/icon-192.png" }); } catch (e) { console.error("Notification failed", e); }
     }
-    if (navigator.vibrate) navigator.vibrate([120, 60, 120]);
+    if (navigator.vibrate) navigator.vibrate([180, 100, 180, 100, 180]);
     playBeep();
   }
 
@@ -301,17 +301,28 @@
       var Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx) return;
       var ctx = new Ctx();
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = timer.mode === "focus" ? 660 : 520;
-      gain.gain.setValueAtTime(0.001, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.55);
-      osc.onended = function () { ctx.close(); };
+      var baseFreq = timer.mode === "focus" ? 880 : 660;
+      var beepCount = 3;
+      var beepDuration = 0.16;
+      var gap = 0.12;
+      var startTime = ctx.currentTime + 0.01;
+
+      for (var i = 0; i < beepCount; i++) {
+        var t = startTime + i * (beepDuration + gap);
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = "square";
+        osc.frequency.value = baseFreq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.7, t + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + beepDuration);
+        osc.start(t);
+        osc.stop(t + beepDuration + 0.02);
+      }
+
+      setTimeout(function () { ctx.close(); }, (beepCount * (beepDuration + gap) + 0.3) * 1000);
     } catch (e) { /* ignore */ }
   }
 
